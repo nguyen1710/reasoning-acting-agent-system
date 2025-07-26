@@ -7,7 +7,7 @@ const ChatContainer = () => {
   // Dữ liệu mẫu để hiển thị UI
   const authUser = {
     _id: "1",
-    profilePic: "https://randomuser.me/api/portraits/men/1.jpg",
+    profilePic: "https://randomuser.me/api/portraits/men/21.jpg",
   };
 
   const selectedUser = {
@@ -43,7 +43,7 @@ const ChatContainer = () => {
     {
       _id: "msg5",
       senderId: "1",
-      text: "I'm good, thankssdfasdfasfasdfaskdfhalkdnsfl;kdfasfasdfaskdfhalkdnsfl;kasndf;lasfasdfaskdfhaldfasfasdfaskdfhalkdnsfl;kasndf;lasfasdfaskdfhaldfasfasdfaskdfhalkdnsfl;kasndf;lasfasdfaskdfhaldfasfasdfaskdfhalkdnsfl;kasndf;lasfasdfaskdfhaldfasfasdfaskdfhalkdnsfl;kasndf;lasfasdfaskdfhalasndf;lasfasdfaskdfhalkdnsfl;kasndf;lansdlk;fnal;sdsfasdfaskdfhalkdnsfl;kasndf;lansdlk;fnal;sdsfasdfaskdfhalkdnsfl;kasndf;lansdlk;fnal;sdnsdlk;fnal;sdnkndflnal;sdnf!",
+      text: "Sự khác nhau giữa AWD, 4WD, RWD, FWD",
       createdAt: new Date().toISOString(),
     },
 
