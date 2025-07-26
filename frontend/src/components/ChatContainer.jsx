@@ -1,17 +1,18 @@
 import ChatHeader from "./ChatHeader";
 import TextInput from "./TextInput";
-import { formatMessageTime } from "../lib/utils";
+import { formatMessageTime } from "~/lib/utils";
+import AvatarAgent from "~/assets/img/agent-avt.png"
 
 const ChatContainer = () => {
   // Dữ liệu mẫu để hiển thị UI
   const authUser = {
     _id: "1",
-    profilePic: "/avatar.png",
+    profilePic: "https://randomuser.me/api/portraits/men/1.jpg",
   };
 
   const selectedUser = {
     _id: "2",
-    profilePic: "https://play-lh.googleusercontent.com/kyqwKigFeMK--sLP227HkpbZuICH5FR9oh1UiND4ly_IdnySC1axnCzSu3yXkpWE2Jc",
+    profilePic: AvatarAgent,
   };
 
   const messages = [
@@ -73,6 +74,7 @@ const ChatContainer = () => {
             <div className="chat-header mb-1">
               <time className="text-xs opacity-50 ml-1">
                 {formatMessageTime(message.createdAt)}
+                {/* {message.createdAt} */}
               </time>
             </div>
             <div className="chat-bubble flex flex-col ">

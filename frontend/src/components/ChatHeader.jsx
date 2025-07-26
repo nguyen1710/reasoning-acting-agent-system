@@ -1,11 +1,11 @@
 import { X } from "lucide-react";
-
+import AvatarAgent from "~/assets/img/agent-avt.png"
 const ChatHeader = () => {
   // Dữ liệu mẫu để hiển thị UI
   const selectedUser = {
     _id: "2",
     fullName: "AI Agent",
-    profilePic: "https://play-lh.googleusercontent.com/kyqwKigFeMK--sLP227HkpbZuICH5FR9oh1UiND4ly_IdnySC1axnCzSu3yXkpWE2Jc",
+    profilePic: AvatarAgent,
     online: true
   };
 
