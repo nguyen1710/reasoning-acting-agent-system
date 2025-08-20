@@ -1,6 +1,8 @@
+import re
 import os
 import groq
 from LangGraph.State import State
+from typing import Dict, List
 
 class ValidatorAgent:
     def __init__(self, model):
@@ -8,23 +10,52 @@ class ValidatorAgent:
             api_key=os.environ.get("GROQ_API_KEY"),
         )
         self.model = model
+        self.reasoning_traces = ""
+
+    def update_state(self, state, answer: str) -> Dict[str, List[str]]:
+        keys = ["missing_actors",
+                "missing_functions",
+                "missing_relationships",
+                "invalid_relationships",
+                "wrong_actors",
+                "wrong_targets"]
+
+        for key in keys:
+            # ?<= - look behind
+            # \s - space
+            # [] - một chuỗi các ký tự
+            # ^] - ngoại trừ ký tự ]
+            lst = re.findall(rf"(?<={key}:)([^]]+)", answer)
+            print(lst)
+            for item in lst:
+                cleaned_item = item.strip(" []'\"")
+                if cleaned_item:
+                    state[key].append(cleaned_item)
 
     def validate(self, state: State):
-        return self.agent.chat.completions.create(
+        answer = self.agent.chat.completions.create(
             messages=[
                 {
                     "role": "system",
                     "content":  """
-                                You are a validator agent. Your task is to validate the list of actors, functions and relationships created by the analyst agent with the system specification.
-                                You will check if any actors, functions or relationship are missing.
-                                For relationships, will check if it is a valid relationship and if its actor and target are correct.
-                                Your output should follow this format:
-                                Missing Actors: [list of missing actors]
-                                Missing Functions: [list of missing functions] 
-                                Missing Relationships: [list of missing relationships]
-                                Invalid Relationships: [list of invalid relationships]
-                                Relationships with wrong actors: [list of relationships with wrong actors]
-                                Relationships with wrong targets: [list of relationships with wrong targets]
+                                Your task is to validate lists of actors, functions and relationships with the system specification.
+                                Validation criteria included:
+                                (1) No missing actors, functions or relationships.
+                                (2) No extra actors, functions or relationships.
+                                (3) No invalid relationships.
+                                (4) Relationships' actors and funcitons must be matched.
+                                Validate with interleaving Thought, Action, Observation steps. Thought can be reason about the current situation, and Action can three types:
+                                (1) Seach[actors/functions/relationships], which searches for actors/functions/relationships presented in system specification.
+                                (2) Lookup[actors/functions/relationships], which look for actors/functions/relationships in the provied lists of actors/functions/relationships.
+                                (3) Finish[status], which return the status of the actors/functions/relationships and put it in the correctsponding result's lists, lists of status included: [correct, missing, extra, invalid, wrong actor, wrong target];
+                                The output must explicitly follow the format for validate reason
+                                Output format:
+                                missing_actors:[list of actors with 'missing' status]
+                                missing_functions:[list of functions with 'missing' status] 
+                                missing_relationships:[list of relationships 'missing' status]
+                                invalid_relationships:[list of relationships 'invalid' status]
+                                wrong_actors:[list of relationships with 'wrong actors' status]
+                                wrong_targets:[list of relationships with 'wrong targets' status]
                                 """,
                 },
                 {
@@ -38,5 +69,7 @@ class ValidatorAgent:
                 }
             ],
             model=self.model,
-        ).choices[0].message.content
-    
+        )
+        self.reasoning_traces = answer.choices[0].message.content
+        self.update_state(state, self.reasoning_traces)
+        return answer
