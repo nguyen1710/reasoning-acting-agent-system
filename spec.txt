@@ -1,0 +1,19 @@
+The system is an E-Commerce Platform.
+
+Guests can browse products and must register before logging in.  
+Users can log in, search for products, add items to the shopping cart, and place orders.  
+Placing an order requires the user to log in and have at least one item in the cart.  
+Users can also write product reviews after purchasing an item.  
+
+Premium Users, who are a specialized type of User, can access exclusive deals and faster shipping options.  
+
+Sellers can list new products, update product details, and manage their inventory. They must log in before performing these actions.  
+
+DeliveryStaff are responsible for shipping orders, updating delivery status, and confirming delivery.  
+
+Administrators oversee the entire system. They can approve or block sellers, manage users, and handle disputes.  
+Administrators must log in before performing any action.  
+
+SupportAgents can assist users by answering queries and resolving complaints. Their ability to resolve complaints depends on the complaint submission by users.  
+
+All reviews must be linked to a specific product, and complaints must be linked to a specific order.
