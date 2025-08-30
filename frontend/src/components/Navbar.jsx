@@ -1,8 +1,21 @@
 import React from 'react'
 import { LogOut, Bot , Settings, User } from "lucide-react";
 import { Link } from "react-router-dom";
-
+import { axiosInstance } from '../lib/axios';
+import { useAuth } from '../hooks/AuthProvider';
+import { useState } from 'react';
 function Navbar() {
+   const [loading, setLoading] = useState(false);
+    const { setAuthUser } = useAuth(); // 👈 để lưu user vào context
+
+    const handleLogout = async () => {
+    try {
+      await axiosInstance.post("/auth/logout");
+      setAuthUser(null); // clear user trong context
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+  };
   return (
     <header
       className="bg-base-100 border-b border-base-300 fixed w-full top-0 z-40 
@@ -37,7 +50,7 @@ function Navbar() {
                   <span className="hidden sm:inline">Profile</span>
                 </Link>
 
-                <button className="flex gap-2 items-center">
+                <button className="flex gap-2 items-center" onClick={handleLogout}>
                   <LogOut className="size-5" />
                   <span className="hidden sm:inline">Logout</span>
                 </button>

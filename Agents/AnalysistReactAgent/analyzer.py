@@ -1,6 +1,6 @@
-from chatLLM import ChatLLM
-from promtBuilder import ReActPromptBuilder
-from parser import ReActParser
+from .chatLLM import ChatLLM
+from .promtBuilder import ReActPromptBuilder
+from .parser import ReActParser
 
 class SystemAnalyzer:
     def __init__(self):
