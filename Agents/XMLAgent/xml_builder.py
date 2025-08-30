@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as ET
-from .State import State
+from Graph.State import State
 
 class UMLXMLBuilder:
     def __init__(self, state: State, canvas_height=600):
