@@ -9,7 +9,8 @@ class ChatLLM:
     def __init__(self):
         self.api_key = os.getenv("OPENROUTER_API_KEY")
         self.endpoint = "https://openrouter.ai/api/v1/chat/completions"
-        self.model = "deepseek/deepseek-chat-v3-0324:free"
+        # self.model = "deepseek/deepseek-chat-v3-0324:free"
+        self.model="deepseek/deepseek-r1-distill-llama-70b:free"
 
     def query(self, prompt: str) -> str:
         response = requests.post(
