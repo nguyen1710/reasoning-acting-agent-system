@@ -4,8 +4,11 @@ import { Eye, EyeOff, Loader2, Lock, Mail, Bot, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import AuthImagePattern from "../components/AuthImagePattern"
 import toast from "react-hot-toast";
+import { axiosInstance } from "../lib/axios";
+import Loading from "../components/Loading";
 const SignUpPage = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -14,20 +17,50 @@ const SignUpPage = () => {
 
   // const { signup, isSigningUp } = useAuthStore();
 
-  const validateForm = () => {
-    if (!formData.fullName.trim()) return toast.error("Full name is required");
-    if (!formData.email.trim()) return toast.error("Email is required");
-    if (!/\S+@\S+\.\S+/.test(formData.email))
-      return toast.error("Invalid email format");
-    if (!formData.password) return toast.error("Password is required");
-    if (formData.password.length < 6)
-      return toast.error("Password must be at least 6 characters");
+const validateForm = () => {
+  if (!formData.fullName.trim()) {
+    toast.error("Full name is required");
+    return false;
+  }
+  if (!formData.email.trim()) {
+    toast.error("Email is required");
+    return false;
+  }
+  if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    toast.error("Invalid email format");
+    return false;
+  }
+  if (!formData.password) {
+    toast.error("Password is required");
+    return false;
+  }
+  if (formData.password.length < 6) {
+    toast.error("Password must be at least 6 characters");
+    return false;
+  }
 
-    return true;
-  };
+  return true;
+};
 
-  const handleSubmit = () => {}
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if(validateForm()) {
+      setIsLoading(true)
+      try {
+         await axiosInstance.post("/auth/signup", formData)
+        toast.success("Sign Up success")
+
+      } catch (err) {
+        console.error("Login error:", err.response?.data || err.message);
+      } finally{
+        setIsLoading(false)
+      }
+    }
+  }
   return (
+   <>
+   {isLoading && <Loading/>}
    <div className="h-screen grid lg:grid-cols-2">
       {/* Left Side - Form */}
       <div className="flex flex-col justify-center items-center p-6 sm:p-12">
@@ -136,6 +169,7 @@ const SignUpPage = () => {
         subtitle={"Welcome to our platform. I will help you to create your project"}
       />
     </div>
+   </>
   );
 };
 

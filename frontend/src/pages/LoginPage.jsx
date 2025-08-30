@@ -3,7 +3,10 @@ import { useState } from "react";
 import AuthImagePattern from "../components/AuthImagePattern";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff, Loader2, Lock, Mail, Bot } from "lucide-react";
-
+import { axiosInstance } from "../lib/axios";
+import { useAuth } from "../hooks/AuthProvider";
+import { useNavigate } from "react-router-dom";
+import Loading from "../components/Loading";
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -11,14 +14,32 @@ const LoginPage = () => {
     password: "",
   });
   // const { login, isLoggingIn } = useAuthStore();
+   const [loading, setLoading] = useState(false);
+  const { setAuthUser } = useAuth(); // 👈 để lưu user vào context
+  const navigate = useNavigate();
 
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // login(formData);
+    setLoading(true);
+
+    try {
+      const res = await axiosInstance.post("/auth/login", formData);
+      setAuthUser(res.data.user); // Lưu user vào context
+      navigate("/"); // Chuyển về trang home
+    } catch (err) {
+      console.error("Login error:", err.response?.data || err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
+
+    <>
+    {loading && <Loading/>}
     <div className="h-screen grid lg:grid-cols-2">
+       
       {/* Left Side - Form */}
       <div className="flex flex-col justify-center items-center p-6 sm:p-12">
         <div className="w-full max-w-md space-y-8">
@@ -94,6 +115,7 @@ const LoginPage = () => {
             </button>
           </form>
 
+
           <div className="text-center">
             <p className="text-base-content/60">
               Don&apos;t have an account?{" "}
@@ -105,12 +127,16 @@ const LoginPage = () => {
         </div>
       </div>
 
+      
+
       {/* Right Side - Image/Pattern */}
       <AuthImagePattern
         title={"Welcome back!"}
         subtitle={"Sign in to continue your conversations and catch up with your messages."}
       />
     </div>
+    </>
+    
   );
 };
 export default LoginPage;

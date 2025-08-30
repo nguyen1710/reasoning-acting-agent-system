@@ -2,10 +2,12 @@ import ChatHeader from "./ChatHeader";
 import TextInput from "./TextInput";
 import { formatMessageTime } from "~/lib/utils";
 import AvatarAgent from "~/assets/img/agent-avt.png"
-
+import FileContainer from "./FileContainer";
+import { useAuth } from "../hooks/AuthProvider";
 const ChatContainer = () => {
   // Dữ liệu mẫu để hiển thị UI
-  const authUser = {
+  const {authUser} = useAuth()
+  const authUser1 = {
     _id: "1",
     profilePic: "https://randomuser.me/api/portraits/men/21.jpg",
   };
@@ -46,6 +48,12 @@ const ChatContainer = () => {
       text: "Sự khác nhau giữa AWD, 4WD, RWD, FWD",
       createdAt: new Date().toISOString(),
     },
+      {
+      _id: "msg6",
+      senderId: "2",
+      file: {fileName: "This is file name"},
+      createdAt: new Date().toISOString(),
+    },
 
   ];
 
@@ -54,17 +62,38 @@ const ChatContainer = () => {
       <ChatHeader />
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
+
+          <div
+        className="chat chat-start"
+      >
+        <div className="chat-image avatar">
+          <div className="size-10 rounded-full border">
+            <img src={selectedUser.profilePic} alt="profile pic" />
+          </div>
+        </div>
+        <div className="chat-header mb-1">
+          <time className="text-xs opacity-50 ml-1">
+            {formatMessageTime(new Date().toISOString())}
+          </time>
+        </div>
+        <div className="chat-bubble flex flex-col">
+          <p className="break-words">Xin chào <span className="font-bold">{authUser.fullName}</span> , tôi có thể giúp gì cho bạn?</p>
+        </div>
+      </div>
+
+
+
         {messages.map((message) => (
           <div
             key={message._id}
-            className={`chat ${message.senderId === authUser._id ? "chat-end" : "chat-start"}`}
+            className={`chat ${message.senderId === authUser1._id ? "chat-end" : "chat-start"}`}
           >
             <div className="chat-image avatar">
               <div className="size-10 rounded-full border">
                 <img
                   src={
-                    message.senderId === authUser._id
-                      ? authUser.profilePic
+                    message.senderId === authUser1._id
+                      ? authUser1.profilePic
                       : selectedUser.profilePic
                   }
                   alt="profile pic"
@@ -77,7 +106,7 @@ const ChatContainer = () => {
                 {/* {message.createdAt} */}
               </time>
             </div>
-            <div className="chat-bubble flex flex-col ">
+            {message.text && (<div className="chat-bubble flex flex-col ">
               {message.image && (
                 <img
                   src={message.image}
@@ -86,11 +115,18 @@ const ChatContainer = () => {
                 />
               )}
               {message.text && <p className="break-words">{message.text}</p>}
-            </div>
+            </div>)}
+
+            {message.file && (
+              <div>
+                {message.file && <FileContainer fileName={message.file.fileName}/>}
+
+              </div>
+            )}
           </div>
         ))}
+        
       </div>
-
       <TextInput/>
     </div>
   );
